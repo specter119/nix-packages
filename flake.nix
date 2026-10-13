@@ -52,48 +52,27 @@
         inherit damask-solvers python-damask;
       };
       magpie = pkgs.callPackage ./packages/magpie.nix { };
-      # The overlay enables ONNX engines; retain a PipeWire ALSA path for non-NixOS hosts.
-      voxtype-onnx = pkgs.voxtype;
-      # On a non-NixOS host the system ALSA config routes `default` to PipeWire,
-      # but nix alsa-lib only searches its own store path for that plugin.
-      # Wrapping (instead of overriding postFixup) keeps the cached binary.
-      voxtype = pkgs.symlinkJoin {
-        name = "voxtype-${voxtype-onnx.version}";
-        paths = [ voxtype-onnx ];
-        nativeBuildInputs = [ pkgs.makeWrapper ];
-        postBuild = ''
-          wrapProgram $out/bin/voxtype \
-            --set-default ALSA_PLUGIN_DIR ${pkgs.pipewire}/lib/alsa-lib
-        '';
-        inherit (voxtype-onnx) meta version;
-      };
-      # ALSA only searches ALSA_PLUGIN_DIR and never falls back to /usr/lib, so a
-      # host whose `default` PCM resolves to PipeWire or PulseAudio needs both
-      # plugin sets in one directory. Merging them from this same nixpkgs pin
-      # keeps them ABI-compatible with the voxtype build (glibc included).
-      voxtype-alsa-plugins = pkgs.buildEnv {
-        name = "voxtype-alsa-plugins";
-        paths = [ pkgs.pipewire pkgs.alsa-plugins ];
-        pathsToLink = [ "/lib/alsa-lib" ];
-      };
-      # Optional variant for hosts with no system PipeWire plugin path, e.g. WSLg,
-      # where the host microphone is only reachable through PulseAudio.
+      # The overlay enables ONNX engines, so pkgs.voxtype already is the ONNX
+      # build; no variant here differs in engine. ALSA searches ALSA_PLUGIN_DIR
+      # only, and nothing sets it outside NixOS, so a host whose microphone is
+      # reachable only through PulseAudio (WSLg) needs the PulseAudio plugin on
+      # that path.
       voxtype-pulse = pkgs.symlinkJoin {
-        name = "voxtype-pulse-${voxtype-onnx.version}";
-        paths = [ voxtype-onnx ];
+        name = "voxtype-pulse-${pkgs.voxtype.version}";
+        paths = [ pkgs.voxtype ];
         nativeBuildInputs = [ pkgs.makeWrapper ];
         postBuild = ''
           wrapProgram $out/bin/voxtype \
-            --set-default ALSA_PLUGIN_DIR ${voxtype-alsa-plugins}/lib/alsa-lib
+            --set-default ALSA_PLUGIN_DIR ${pkgs.alsa-plugins}/lib/alsa-lib
         '';
-        inherit (voxtype-onnx) meta version;
+        inherit (pkgs.voxtype) meta version;
       };
     in {
       overlays.default = voxtypeOverlay;
 
       # Expose package build outputs only; host and user installation are out of scope.
       packages.${system} = {
-        inherit damask llama-cpp magpie voxtype voxtype-pulse;
+        inherit damask llama-cpp magpie voxtype-pulse;
       };
     };
 }
