@@ -15,6 +15,37 @@
         config.allowUnfree = true;
         overlays = [ voxtypeOverlay ];
       };
+      # Separate instance so the CUDA architecture setting stays out of the other packages.
+      cudaPkgs = import nixpkgs {
+        inherit system;
+        config = {
+          allowUnfree = true;
+          cudaCapabilities = [ "7.5" ];
+        };
+      };
+      # nodejs_latest (26.x in the locked nixpkgs) is not in the binary cache and
+      # only builds the web UI, so use the cached LTS instead.
+      llama-cpp-cuda = cudaPkgs.llama-cpp.override {
+        cudaSupport = true;
+        nodejs_latest = cudaPkgs.nodejs_22;
+      };
+      # The CUDA libraries have RUNPATH /run/opengl-driver/lib, which only exists on
+      # NixOS. On this WSL host the driver lives in /usr/lib/wsl/lib, and without it
+      # no CUDA device is found. Wrapping keeps the cached build; the original
+      # binaries still run from their own store path, where ggml finds its backends.
+      llama-cpp = pkgs.symlinkJoin {
+        name = "llama-cpp-${llama-cpp-cuda.version}";
+        paths = [ llama-cpp-cuda ];
+        nativeBuildInputs = [ pkgs.makeWrapper ];
+        postBuild = ''
+          for f in $out/bin/*; do
+            case "$f" in *.so|*.so.*) continue ;; esac
+            [ -x "$f" ] && [ ! -d "$f" ] || continue
+            wrapProgram "$f" --suffix LD_LIBRARY_PATH : /usr/lib/wsl/lib
+          done
+        '';
+        inherit (llama-cpp-cuda) meta version;
+      };
       damask-solvers = pkgs.callPackage ./packages/damask-solvers.nix { };
       python-damask = pkgs.python3Packages.callPackage ./packages/python-damask.nix { };
       damask = pkgs.callPackage ./packages/damask.nix {
@@ -41,7 +72,7 @@
 
       # Expose package build outputs only; host and user installation are out of scope.
       packages.${system} = {
-        inherit damask magpie voxtype;
+        inherit damask llama-cpp magpie voxtype;
       };
     };
 }

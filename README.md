@@ -7,9 +7,14 @@ installation are managed elsewhere.
 ## Packages
 
 - `damask`: DAMASK solvers and Python tools, built from the upstream 3.1.0 source.
+- `llama-cpp`: nixpkgs' llama.cpp built with CUDA for compute capability 7.5
+  (Turing). It follows the version in the locked nixpkgs. To target another GPU,
+  change `cudaCapabilities` in `flake.nix`. The programs are wrapped to find the
+  WSL NVIDIA driver in `/usr/lib/wsl/lib`, since non-NixOS hosts have no
+  `/run/opengl-driver/lib`.
 - `magpie`: Magpie desktop app and CLI, from the upstream v0.1.410 Linux release.
   Its desktop entry launches through `nixGL`, which must be available on the
-  desktop session's `PATH`.
+  desktop session's `PATH`. It is updated infrequently.
 - `voxtype`: nixpkgs' Voxtype with ONNX support and a PipeWire ALSA plugin path.
 
 The flake currently supports `x86_64-linux`.
@@ -27,6 +32,7 @@ for non-NixOS hosts.
 
 ```sh
 nix build .#damask
+nix build .#llama-cpp
 nix build .#magpie
 nix build .#voxtype
 ```
