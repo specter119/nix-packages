@@ -67,12 +67,33 @@
         '';
         inherit (voxtype-onnx) meta version;
       };
+      # ALSA only searches ALSA_PLUGIN_DIR and never falls back to /usr/lib, so a
+      # host whose `default` PCM resolves to PipeWire or PulseAudio needs both
+      # plugin sets in one directory. Merging them from this same nixpkgs pin
+      # keeps them ABI-compatible with the voxtype build (glibc included).
+      voxtype-alsa-plugins = pkgs.buildEnv {
+        name = "voxtype-alsa-plugins";
+        paths = [ pkgs.pipewire pkgs.alsa-plugins ];
+        pathsToLink = [ "/lib/alsa-lib" ];
+      };
+      # Optional variant for hosts with no system PipeWire plugin path, e.g. WSLg,
+      # where the host microphone is only reachable through PulseAudio.
+      voxtype-pulse = pkgs.symlinkJoin {
+        name = "voxtype-pulse-${voxtype-onnx.version}";
+        paths = [ voxtype-onnx ];
+        nativeBuildInputs = [ pkgs.makeWrapper ];
+        postBuild = ''
+          wrapProgram $out/bin/voxtype \
+            --set-default ALSA_PLUGIN_DIR ${voxtype-alsa-plugins}/lib/alsa-lib
+        '';
+        inherit (voxtype-onnx) meta version;
+      };
     in {
       overlays.default = voxtypeOverlay;
 
       # Expose package build outputs only; host and user installation are out of scope.
       packages.${system} = {
-        inherit damask llama-cpp magpie voxtype;
+        inherit damask llama-cpp magpie voxtype voxtype-pulse;
       };
     };
 }
