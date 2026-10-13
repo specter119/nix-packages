@@ -52,6 +52,8 @@ stdenvNoCC.mkDerivation {
     runHook preInstall
 
     dpkg-deb -x "$src" "$out"
+    mv "$out/usr/share" "$out/share"
+    rmdir "$out/usr"
 
     # Electron uses xdg-open for shell.openExternal() on Linux.  A Nix
     # dependency does not add its binaries to PATH, so the wrapper below
@@ -82,15 +84,15 @@ fi
 EOF
     chmod 0755 "$out/bin/lody"
 
-    desktop_file="$out/usr/share/applications/ai.lody.desktop.desktop"
+    desktop_file="$out/share/applications/ai.lody.desktop.desktop"
     substituteInPlace "$desktop_file" \
       --replace-fail '/opt/Lody/lodyDesktop' "$out/bin/lody" \
       --replace-fail 'Icon=lodyDesktop' 'Icon=lody'
 
-    mv "$out/usr/share/icons/hicolor/512x512/apps/lodyDesktop.png" \
-      "$out/usr/share/icons/hicolor/512x512/apps/lody.png"
+    mv "$out/share/icons/hicolor/512x512/apps/lodyDesktop.png" \
+      "$out/share/icons/hicolor/512x512/apps/lody.png"
 
-    rm -rf "$out/usr/share/doc"
+    rm -rf "$out/share/doc"
 
     install -Dm644 "$out/opt/Lody/LICENSE.electron.txt" \
       "$out/share/licenses/$pname/LICENSE.electron.txt"
