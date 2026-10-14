@@ -11,6 +11,8 @@
   libnotify,
   libsecret,
   libgbm,
+  libglvnd,
+  mesa,
   libXScrnSaver,
   libXtst,
   nss,
@@ -42,6 +44,8 @@ stdenvNoCC.mkDerivation {
     libnotify
     libsecret
     libgbm
+    libglvnd
+    mesa
     libXScrnSaver
     libXtst
     nss
@@ -73,6 +77,15 @@ if [[ -r "$flags_file" ]]; then
 fi
 
 export PATH="${xdg-utils}/bin''${PATH:+:$PATH}"
+
+# Electron loads libEGL/libGBM with dlopen().  The Nix libraries are not
+# visible through the host loader by default, and NixOS's Mesa packages look
+# for drivers under /run/opengl-driver.  Keep the Nix graphics stack together
+# and retain host/NixOS driver directories as fallbacks.
+export LD_LIBRARY_PATH="${libglvnd}/lib:${libgbm}/lib:${mesa}/lib''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+export GBM_BACKENDS_PATH="${mesa}/lib/gbm:/run/opengl-driver/lib/gbm''${GBM_BACKENDS_PATH:+:$GBM_BACKENDS_PATH}"
+export LIBGL_DRIVERS_PATH="${mesa}/lib/dri:/run/opengl-driver/lib/dri:/usr/lib/dri''${LIBGL_DRIVERS_PATH:+:$LIBGL_DRIVERS_PATH}"
+export __EGL_VENDOR_LIBRARY_DIRS="${mesa}/share/glvnd/egl_vendor.d:/run/opengl-driver/share/glvnd/egl_vendor.d:/etc/glvnd/egl_vendor.d:/usr/share/glvnd/egl_vendor.d''${__EGL_VENDOR_LIBRARY_DIRS:+:$__EGL_VENDOR_LIBRARY_DIRS}"
 
 # Keep the lody:// callback as argv[1] so Electron can handle a cold-start
 # deep link even when optional Chromium flags are configured.
