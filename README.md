@@ -15,6 +15,17 @@ installation are managed elsewhere.
 - `magpie`: Magpie desktop app and CLI, from the upstream v0.1.410 Linux release.
   Its desktop entry launches through `nixGL`, which must be available on the
   desktop session's `PATH`. It is updated infrequently.
+- `maka`: Apache Maka built from the `rust-preview` branch (pinned commit), for
+  WSL. It installs `maka` and `maka-python-worker` (which must sit beside it) and
+  is built without the `native-desktop` feature, as upstream does for WSL.
+  Computer Use then drives the Windows desktop through a matching Windows
+  `maka.exe`; set `MAKA_CUA_WINDOWS_EXECUTABLE` to its WSL path at run time.
+  The desktop shell and the Windows-only `maka-service` entry are not built.
+  Maka's own V8 build is downloaded from its GitHub release, pinned by hash.
+  The npm dependencies are fetched through `registry.yarnpkg.com`, which serves
+  the same registry as `registry.npmjs.org` (reachable where the latter is
+  not), and fixed-output builds trust the host CA bundle in
+  `/etc/ssl/certs/ca-certificates.crt` for networks that re-sign HTTPS.
 - `voxtype`: nixpkgs' Voxtype with ONNX support and a PipeWire ALSA plugin path.
 
 The flake currently supports `x86_64-linux`.
@@ -34,6 +45,7 @@ for non-NixOS hosts.
 nix build .#damask
 nix build .#llama-cpp
 nix build .#magpie
+nix build .#maka
 nix build .#voxtype
 ```
 

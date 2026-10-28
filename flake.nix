@@ -53,6 +53,7 @@
       };
       magpie = pkgs.callPackage ./packages/magpie.nix { };
       lody-desktop = pkgs.callPackage ./packages/lody-desktop.nix { };
+      maka = pkgs.callPackage ./packages/maka.nix { };
       # The overlay enables ONNX engines, so pkgs.voxtype already is the ONNX
       # build; no variant here differs in engine. ALSA searches ALSA_PLUGIN_DIR
       # only, and nothing sets it outside NixOS, so a host whose microphone is
@@ -73,7 +74,7 @@
 
       # Expose package build outputs only; host and user installation are out of scope.
       packages.${system} = {
-        inherit damask llama-cpp magpie lody-desktop voxtype-pulse;
+        inherit damask llama-cpp magpie lody-desktop maka voxtype-pulse;
       };
     };
 }
