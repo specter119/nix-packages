@@ -12,7 +12,7 @@ installation are managed elsewhere.
   change `cudaCapabilities` in `flake.nix`. The programs are wrapped to find the
   WSL NVIDIA driver in `/usr/lib/wsl/lib`, since non-NixOS hosts have no
   `/run/opengl-driver/lib`.
-- `magpie`: Magpie desktop app and CLI, from the upstream v0.1.410 Linux release.
+- `magpie`: Magpie desktop app and CLI, from the upstream v0.1.1274 Linux release.
   Its desktop entry launches through `nixGL`, which must be available on the
   desktop session's `PATH`. It is updated infrequently.
 - `maka`: Apache Maka built from the `rust-preview` branch (pinned commit), for

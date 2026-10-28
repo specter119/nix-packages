@@ -7,13 +7,13 @@
   webkitgtk_4_1,
 }:
 
-stdenvNoCC.mkDerivation {
+stdenvNoCC.mkDerivation (finalAttrs: {
   pname = "magpie";
-  version = "0.1.410";
+  version = "0.1.1274";
 
   src = fetchurl {
-    url = "https://github.com/yetone/magpie-releases/releases/download/v0.1.410/magpie-linux-amd64";
-    hash = "sha256-+3KPiboQOWK/i0U1lyRKhWbcP6+WSjZRG8vLkj3uwOQ=";
+    url = "https://github.com/yetone/magpie/releases/download/v${finalAttrs.version}/magpie-linux-amd64";
+    hash = "sha256-xSUuIbz6pLRVHNViqV6MeSKc+Awpvsm/cYCXyAZJb+A=";
   };
 
   dontUnpack = true;
@@ -51,4 +51,4 @@ EOF
     mainProgram = "magpie";
     platforms = [ "x86_64-linux" ];
   };
-}
+})
