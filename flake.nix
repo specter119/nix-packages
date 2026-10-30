@@ -46,6 +46,15 @@
         '';
         inherit (llama-cpp-cuda) meta version;
       };
+      # fastfetch counts nix packages by spawning the host's nix-store, which inherits
+      # the wrapper's LD_LIBRARY_PATH. With a distro-packaged Nix, nixpkgs' libsqlite3
+      # needs a newer glibc than the host has, so nix-store fails and nix packages count
+      # as 0. sqlite only serves rpm and soar package counts. The shell wrapper keeps the
+      # local rebuild of this wrapper free of a C toolchain.
+      fastfetch = pkgs.fastfetch.override {
+        sqliteSupport = false;
+        makeBinaryWrapper = pkgs.makeWrapper;
+      };
       damask-solvers = pkgs.callPackage ./packages/damask-solvers.nix { };
       python-damask = pkgs.python3Packages.callPackage ./packages/python-damask.nix { };
       damask = pkgs.callPackage ./packages/damask.nix {
@@ -74,7 +83,7 @@
 
       # Expose package build outputs only; host and user installation are out of scope.
       packages.${system} = {
-        inherit damask llama-cpp magpie lody-desktop maka voxtype-pulse;
+        inherit damask fastfetch llama-cpp magpie lody-desktop maka voxtype-pulse;
       };
     };
 }

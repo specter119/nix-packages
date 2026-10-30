@@ -7,6 +7,10 @@ installation are managed elsewhere.
 ## Packages
 
 - `damask`: DAMASK solvers and Python tools, built from the upstream 3.1.0 source.
+- `fastfetch`: nixpkgs' fastfetch without sqlite, so that a distro-packaged Nix's
+  `nix-store` can still run under the wrapper's `LD_LIBRARY_PATH` and nix packages are
+  counted. rpm and soar packages are not counted. Its version follows the locked
+  nixpkgs; upgrade it with `nix flake update nixpkgs` here.
 - `llama-cpp`: nixpkgs' llama.cpp built with CUDA for compute capability 7.5
   (Turing). It follows the version in the locked nixpkgs. To target another GPU,
   change `cudaCapabilities` in `flake.nix`. The programs are wrapped to find the
@@ -43,6 +47,7 @@ for non-NixOS hosts.
 
 ```sh
 nix build .#damask
+nix build .#fastfetch
 nix build .#llama-cpp
 nix build .#magpie
 nix build .#maka
