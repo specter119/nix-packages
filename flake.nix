@@ -63,6 +63,7 @@
       magpie = pkgs.callPackage ./packages/magpie.nix { };
       lody-desktop = pkgs.callPackage ./packages/lody-desktop.nix { };
       maka = pkgs.callPackage ./packages/maka.nix { };
+      pokebonk = pkgs.callPackage ./packages/pokebonk.nix { };
       comsol = pkgs.callPackage ./packages/comsol { };
       # The overlay enables ONNX engines, so pkgs.voxtype already is the ONNX
       # build; no variant here differs in engine. ALSA searches ALSA_PLUGIN_DIR
@@ -84,7 +85,7 @@
 
       # Expose package build outputs only; host and user installation are out of scope.
       packages.${system} = {
-        inherit damask fastfetch llama-cpp magpie lody-desktop maka comsol voxtype-pulse;
+        inherit damask fastfetch llama-cpp magpie lody-desktop maka pokebonk comsol voxtype-pulse;
       };
     };
 }
