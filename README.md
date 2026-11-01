@@ -23,7 +23,10 @@ installation are managed elsewhere.
   enabled for `radeonsi` through `RUSTICL_ENABLE`, which you can override. If
   3D graphics still fail, `comsol -3drend sw` forces software rendering.
   `.#comsol.shell` opens a shell in the same environment for finding missing
-  libraries.
+  libraries. Help's embedded browser uses the bundled WebKitGTK; links and
+  documents open in the host's default application through
+  xdg-desktop-portal, which must be running on the host (non-web files such
+  as PDFs may show an "Open With" chooser).
 - `damask`: DAMASK solvers and Python tools, built from the upstream 3.1.0 source.
 - `fastfetch`: nixpkgs' fastfetch without sqlite, so that a distro-packaged Nix's
   `nix-store` can still run under the wrapper's `LD_LIBRARY_PATH` and nix packages are

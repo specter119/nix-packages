@@ -8,11 +8,23 @@
   findutils,
   buildFHSEnv,
   writeShellScript,
+  writeShellScriptBin,
+  glib,
   mesa,
 }:
 
 let
   mesaOpencl = mesa.opencl;
+
+  # The FHS root hides the host's browsers and their .desktop files, so
+  # COMSOL's `xdg-open` finds nothing; hand URLs and files to the host's
+  # default application through the desktop portal. COMSOL's launcher
+  # preloads its own libstdc++ and puts its library dirs first, which must
+  # not leak into anything gio starts.
+  xdgOpenPortal = writeShellScriptBin "xdg-open" ''
+    unset LD_PRELOAD LD_LIBRARY_PATH
+    GIO_USE_PORTALS=1 exec ${lib.getExe' glib "gio"} open "$@"
+  '';
 
   version = "6.4.0.293";
   isoName = "COMSOL_Multiphysics_${version}.iso";
@@ -123,6 +135,9 @@ let
           nss
           nspr
           cups
+          # SWT's embedded browser (Help) loads libwebkit2gtk-4.1.
+          webkitgtk_4_1
+          xdgOpenPortal
           # Native solver, graphics and MPI libraries shipped by COMSOL link
           # against these.
           zlib
@@ -173,6 +188,12 @@ let
     # The ICD file sits in the store, not in the FHS root's /etc.
     export OCL_ICD_VENDORS="''${OCL_ICD_VENDORS:-${mesaOpencl}/etc/OpenCL/vendors}"
     export RUSTICL_ENABLE="''${RUSTICL_ENABLE:-radeonsi}"
+
+    # The launcher compares libstdc++ minor versions by readlink, which reads
+    # as older than COMSOL's inside this root, and then preloads COMSOL's GCC 13
+    # runtime. That lacks the CXXABI_1.3.15 that WebKit's ICU needs, so use the
+    # root's newer libstdc++.
+    export FORCECOMSOLGCC="''${FORCECOMSOLGCC:-off}"
     exec ${unwrapped}/bin/comsol "$@"
   '';
 in
