@@ -36,11 +36,11 @@
 
 stdenvNoCC.mkDerivation (finalAttrs: {
   pname = "pokebonk";
-  version = "1.3.0";
+  version = "1.4.0";
 
   src = fetchurl {
     url = "https://github.com/CharcherGit/pokebonk-app/releases/download/v${finalAttrs.version}/PokeBonk-${finalAttrs.version}-linux-amd64.deb";
-    hash = "sha256-pFxKRcD12IvtchYOC/FAPPIf2uyAuEQpctPzM4UqUuI=";
+    hash = "sha256-DIwYPPzIykgiDVRL0o0mz0XIZZSKvX09t2SWZZr2z+k=";
   };
 
   dontUnpack = true;
