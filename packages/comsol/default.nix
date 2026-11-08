@@ -209,7 +209,7 @@ in
 Type=Application
 Name=COMSOL Multiphysics
 Comment=Multiphysics simulation software
-Exec=$out/bin/comsol %f
+Exec=env GTK_IM_MODULE=xim $out/bin/comsol %f
 Icon=comsol
 Categories=Education;Science;Engineering;
 Terminal=false
