@@ -6,6 +6,24 @@ installation are managed elsewhere.
 
 ## Packages
 
+Experimental migration from `amr` (not yet verified end-to-end):
+
+- `abaqus6145`, `abaqus2022`, `abaqus2024`: Abaqus installers using local,
+  non-redistributable media via `requireFile`. All three packages build and
+  report their versions; CAE, licensed execution and solver jobs have not been
+  verified. The 2024 support diagnostic has known failures.
+  For the exact filenames, hashes and commands see `packages/abaqus/default.nix`.
+- `materials-studio`: an FHS environment for a separately installed Materials
+  Studio 2017; the application itself is not managed by Nix. See
+  `packages/materials-studio/README.md`.
+- `msc-marc`: Marc/Mentat 2024.2 with a sandboxed Intel oneAPI 2024.2
+  (classic `ifort`, no BaseKit), Marc-bundled MKL, HDF5 1.14.6 built with
+  `ifort`/`icx`, and DAMASK 3.0.2 patches. Verified: `ifort -V`, `h5fc`
+  end-to-end Fortran I/O, `run_marc -h`, DAMASK scripts patched. Not verified:
+  licensed solver runs, Mentat GUI, `comp_damask` execution. See
+  `packages/msc-marc/default.nix` and `packages/oneapi-2024-work/README.md`.
+
+
 - `comsol`: COMSOL Multiphysics 6.4.0.293 for Linux, unpacked from the
   installation DVD image and run in an FHS environment. The image is not
   redistributable, so the build needs it in the Nix store:

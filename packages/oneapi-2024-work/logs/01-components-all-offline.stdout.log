@@ -1,0 +1,28 @@
+Extract l_HPCKit_p_2024.2.0.635_offline to /tmp/ev3/l_HPCKit_p_2024.2.0.635_offline...
+[##############################################################################]
+Extract l_HPCKit_p_2024.2.0.635_offline completed!
+Checking system requirements...
+Done.
+Wait while the installer is preparing...
+Done.
+Launching the installer...
+This machine uses operating system "Unknown". Compatibility issues may occur.
+Installation can continue; however, product functionality may not meet expectations because this product is untested on this operating system. Suggestion: Check the Release Notes for a list of supported operating systems and install this product on a compliant system.
+Missing Software on Machine.
+Intel® HPC Toolkit is an add-on for the Intel® oneAPI Base Toolkit. For the full set of developer tools including Intel® oneAPI DPC++ Compiler, Intel® oneAPI libraries, and analyzers, download Intel® oneAPI Base Toolkit here: https://software.intel.com/en-us/oneapi/oneapi-kit
+G++ package is not installed
+Intel® oneAPI DPC++/C++ Compiler requires G++. It can be installed with
+sudo apt-get install g++ on Ubuntu / Debian 
+sudo zypper install gcc-c++ on SUSE 
+sudo dnf install gcc-c++ on CentOS / RHEL / Fedora
+Start installation flow...
+Cannot establish internet connection with current settings.
+Download failed.
+Failed to establish internet connection. Check your connection settings.
+An error has been encountered during the installation process. Detailed installation log files are located under '/tmp/ev3/logs'.
+Please submit this error and the log files using one of the following support options:
+ - Report your issue on the Intel Community Forum - https://community.intel.com/t5/Intel-oneAPI-Registration/bd-p/registration-download-licensing-instal
+ - If you have Priority Support, submit a Service request at Online Service Center - https://supporttickets.intel.com/servicecenter?lang=en-US
+Installer completed with code 1
+Remove extracted files: /tmp/ev3/l_HPCKit_p_2024.2.0.635_offline...
+EXIT=1

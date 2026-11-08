@@ -1,0 +1,30 @@
+--- marc2024.2/tools/include_linux64
++++ marc2024.2/tools/include_linux64
+@@ -325,6 +325,27 @@
+ if test "$MARCHDF_HDF" = "HDF"; then
+  HDF_INCLUDE="-I$MARC_HDF/include"
+  HDF_LIBS="$MARC_LIB/libhdf5_fortran.so.310 $MARC_LIB/libhdf5.so.310 $MARC_LIB/libhdf5_f90cstub.so.310"
++fi
++
++if test -z "$HDF5_LIB" -a -n "$HDF_LIBS"; then
++  HDF5_LIB="$HDF_LIBS"
++fi
++
++if test -n "$DAMASK_USER"; then
++  HDF5_PREFIX=/opt/MSC.Software/hdf5
++  if test -d "$HDF5_PREFIX/lib"; then
++    LD_LIBRARY_PATH="$HDF5_PREFIX/lib:$LD_LIBRARY_PATH"
++    export LD_LIBRARY_PATH
++    PATH="$HDF5_PREFIX/bin:$PATH"
++    export PATH
++    PRELOAD_NEW=$HDF5_PREFIX/lib/libhdf5.so.310:$HDF5_PREFIX/lib/libhdf5_hl.so.310:$HDF5_PREFIX/lib/libhdf5_fortran.so.310
++    if test -n "$LD_PRELOAD"; then
++      LD_PRELOAD=$LD_PRELOAD:$PRELOAD_NEW
++    else
++      LD_PRELOAD=$PRELOAD_NEW
++    fi
++    export LD_PRELOAD
++  fi
+ fi
+ 
+ #

@@ -1,0 +1,46 @@
+Running phase: patchPhase
+@nix { "action": "setPhase", "phase": "patchPhase" }
+Running phase: updateAutotoolsGnuConfigScriptsPhase
+@nix { "action": "setPhase", "phase": "updateAutotoolsGnuConfigScriptsPhase" }
+Running phase: configurePhase
+@nix { "action": "setPhase", "phase": "configurePhase" }
+no configure script, doing nothing
+Running phase: buildPhase
+@nix { "action": "setPhase", "phase": "buildPhase" }
+no Makefile or custom buildPhase, doing nothing
+Running phase: installPhase
+@nix { "action": "setPhase", "phase": "installPhase" }
+=== installing hpckit: intel.oneapi.lin.ifort-compiler:intel.oneapi.lin.dpcpp-cpp-compiler ===
+Extract l_HPCKit_p_2024.2.0.635_offline to /build/l_HPCKit_p_2024.2.0.635_offline...
+[##############################################################################]
+Extract l_HPCKit_p_2024.2.0.635_offline completed!
+Checking system requirements...
+Done.
+Wait while the installer is preparing...
+Done.
+Launching the installer...
+This machine uses operating system "Unknown". Compatibility issues may occur.
+Installation can continue; however, product functionality may not meet expectations because this product is untested on this operating system. Suggestion: Check the Release Notes for a list of supported operating systems and install this product on a compliant system.
+Missing Software on Machine.
+Intel® HPC Toolkit is an add-on for the Intel® oneAPI Base Toolkit. For the full set of developer tools including Intel® oneAPI DPC++ Compiler, Intel® oneAPI libraries, and analyzers, download Intel® oneAPI Base Toolkit here: https://software.intel.com/en-us/oneapi/oneapi-kit
+G++ package is not installed
+Intel® oneAPI DPC++/C++ Compiler requires G++. It can be installed with
+sudo apt-get install g++ on Ubuntu / Debian 
+sudo zypper install gcc-c++ on SUSE 
+sudo dnf install gcc-c++ on CentOS / RHEL / Fedora
+Start installation flow...
+Installed Location: /nix/store/6cwj9k1hxcwwcvq90wg92rcpv6w6yil2-intel-oneapi-2024.2-2024.2
+Log files: /build/intel-logs/hpckit
+Installation has successfully completed
+Remove extracted files: /build/l_HPCKit_p_2024.2.0.635_offline...
+--- ifort -V ---
+Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.13.0 Build 20240602_000000
+Copyright (C) 1985-2024 Intel Corporation.  All rights reserved.
+
+ifort: remark #10448: Intel(R) Fortran Compiler Classic (ifort) is now deprecated and will be discontinued late 2024. Intel recommends that customers transition now to using the LLVM-based Intel(R) Fortran Compiler (ifx) for continued Windows* and Linux* support, new language support, new language features, and optimizations. Use '-diag-disable=10448' to disable this message.
+--- minimal Fortran build ---
+sum of squares 1..10 =      385.0
+installPhase completed in 1 minutes 7 seconds
+Running phase: fixupPhase
+@nix { "action": "setPhase", "phase": "fixupPhase" }
+patching script interpreter paths in /nix/store/6cwj9k1hxcwwcvq90wg92rcpv6w6yil2-intel-oneapi-2024.2-2024.2

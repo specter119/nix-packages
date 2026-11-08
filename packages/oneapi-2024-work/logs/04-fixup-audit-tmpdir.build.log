@@ -1,0 +1,8 @@
+# fixupPhase failure of the first working install (before noAuditTmpdir).
+# drv: /nix/store/370adll6kbzbspa6q96c67kfxxiwp2kw-intel-oneapi-2024.2-2024.2.drv
+# 'patchelf: wrong ELF type' appears 57 times (32-bit objects in the same audit pass);
+# the lines below are the ones that failed the build.
+
+checking for references to /build/ in /nix/store/yay998ra3wgznwwhfv5j35p9v1v1lzaz-intel-oneapi-2024.2-2024.2...
+RPATH of binary /nix/store/yay998ra3wgznwwhfv5j35p9v1v1lzaz-intel-oneapi-2024.2-2024.2/mpi/2021.13/bin/impi_info contains a forbidden reference to /build/
+Some binaries contain forbidden references to /build/. Check the error above!
