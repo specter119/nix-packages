@@ -19,11 +19,20 @@
         overlays = [ voxtypeOverlay ];
       };
       # Separate instance so the CUDA architecture setting stays out of the other packages.
+      #
+      # cudaCapabilities drives CMAKE_CUDA_ARCHITECTURES, so it must name the GPU that
+      # will *run* the binary: 12.0 = Blackwell (sm_120, RTX PRO 4500 / 50-series),
+      # 7.5 = Turing (sm_75, RTX 2080 Ti). It cannot be auto-detected: nix builds are
+      # sandboxed without /dev/nvidia*, and CMAKE_CUDA_ARCHITECTURES=native would probe
+      # the build host (or fail) instead of the host that runs the result. ggml rewrites
+      # a plain 12X to 12Xa (Blackwell FP4 tensor cores are arch-specific), so "12.0"
+      # is enough and no -real/-virtual suffix is needed here.
+      cudaCapabilities = [ "12.0" ];
       cudaPkgs = import nixpkgs {
         inherit system;
         config = {
           allowUnfree = true;
-          cudaCapabilities = [ "7.5" ];
+          inherit cudaCapabilities;
         };
       };
       # nodejs_latest (26.x in the locked nixpkgs) is not in the binary cache and
