@@ -1,5 +1,6 @@
 {
   lib,
+  stdenv,
   stdenvNoCC,
   requireFile,
   buildFHSEnv,
@@ -9,6 +10,7 @@
   gnutar,
   gzip,
   jdk8,
+  libpng,
   version ? "2024",
 }:
 
@@ -40,6 +42,33 @@ let
     '';
   };
 
+  # Abaqus 2022's bundled matplotlib and the 6.14 TOSCA viewer were linked
+  # against libpng 1.2's PNG12_0 ABI.  Keep the old soname and symbol versions
+  # as a thin forwarding layer over the supported libpng 1.6 library.
+  libpng12Compat = stdenv.mkDerivation {
+    pname = "libpng12-compat";
+    version = "1.0";
+    dontUnpack = true;
+    buildInputs = [ libpng libpng.dev ];
+    buildPhase = ''
+      runHook preBuild
+      $CC -shared -fPIC -O2 -Wall \
+        ${./libpng12-compat.c} \
+        -I${libpng.dev}/include -L${libpng}/lib \
+        -Wl,-rpath,${libpng}/lib \
+        -Wl,--no-as-needed -lpng16 -ldl \
+        -Wl,--version-script=${./libpng12-compat.map} \
+        -Wl,-soname,libpng12.so.0 \
+        -o libpng12.so.0
+      runHook postBuild
+    '';
+    installPhase = ''
+      runHook preInstall
+      install -Dm755 libpng12.so.0 $out/lib/libpng12.so.0
+      runHook postInstall
+    '';
+  };
+
   # Abaqus 2022's installer rejects NixOS when lsb_release reports n/a.
   # Limit this compatibility response to the installation environment.
   lsbReleaseStub = writeTextFile {
@@ -67,7 +96,8 @@ let
       libxxf86vm libxcb fontconfig freetype glib gtk3 motif
       libjpeg_turbo libpng mesa binutils
     ] ++ lib.optionals (name == "abaqus-installer-shell" && version == "2022") [ lsbReleaseStub ]
-      ++ lib.optionals (version == "2024") [ pkgs.file pkgs.libnsl pkgs.lsb-release ];
+      ++ lib.optionals (version == "2024") [ pkgs.file pkgs.libnsl pkgs.lsb-release ]
+      ++ lib.optionals (version != "2024" && name != "abaqus-installer-shell") [ libpng12Compat ];
   };
   installer = mkEnv "abaqus-installer-shell" "bash";
   unwrapped = stdenvNoCC.mkDerivation {
