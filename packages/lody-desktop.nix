@@ -22,11 +22,11 @@
 
 stdenvNoCC.mkDerivation {
   pname = "lody-desktop";
-  version = "0.104.0";
+  version = "0.113.1";
 
   src = fetchurl {
-    url = "https://updates.lody.ai/production/Lody-0.104.0-amd64.deb";
-    hash = "sha256-XczMk9D5+jHYXN9uJGKe/BQVdZCfFJwFz2PlRSxZH/c=";
+    url = "https://updates.lody.ai/production/Lody-0.113.1-amd64.deb";
+    hash = "sha256-FUkB1osQv7Gt+7uf+1/P0g5g1uoKwrvIrBmMWEaRP/E=";
   };
 
   dontUnpack = true;
@@ -58,6 +58,10 @@ stdenvNoCC.mkDerivation {
     dpkg-deb -x "$src" "$out"
     mv "$out/usr/share" "$out/share"
     rmdir "$out/usr"
+
+    # The bundled musl prebuilds can never load on glibc, and autoPatchelf
+    # fails on their libc.musl dependency.
+    find "$out/opt/Lody" -name '*linuxmusl*.node' -delete
 
     # Electron uses xdg-open for shell.openExternal() on Linux.  A Nix
     # dependency does not add its binaries to PATH, so the wrapper below
