@@ -2,8 +2,11 @@
   description = "Personal Nix packages not covered by nixpkgs defaults";
 
   inputs = {
-    # USTC 镜像 (github fetcher 的 codeload 302 超时, 改用镜像 tarball)
-    nixpkgs.url = "https://mirrors.ustc.edu.cn/nix-channels/nixpkgs-unstable/nixexprs.tar.xz";
+    # A tarball instead of the github fetcher, whose codeload 302 times out here.
+    # This channel URL redirects to an immutable releases.nixos.org URL, so the lock
+    # records a rev; the USTC mirror URL has none and its content changes in place,
+    # which breaks the locked narHash. Binary caches are configured separately.
+    nixpkgs.url = "https://channels.nixos.org/nixpkgs-unstable/nixexprs.tar.xz";
   };
 
   outputs = { nixpkgs, ... }:
