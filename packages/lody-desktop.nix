@@ -22,11 +22,11 @@
 
 stdenvNoCC.mkDerivation {
   pname = "lody-desktop";
-  version = "0.116.1";
+  version = "0.117.0";
 
   src = fetchurl {
-    url = "https://updates.lody.ai/production/Lody-0.116.1-amd64.deb";
-    hash = "sha256-bv7UJllAFrjOJJ5aA7V2cxQWgiRakFzyX8wTvGroibQ=";
+    url = "https://updates.lody.ai/production/Lody-0.117.0-amd64.deb";
+    hash = "sha256-apDBOvgJ+rE4Gw6ktSDIfVvksIISA0dBGb21/Q9vzXI=";
   };
 
   dontUnpack = true;
